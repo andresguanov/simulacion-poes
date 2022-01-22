@@ -4,9 +4,23 @@ import './App.css'
 
 
 const Capas = ({ number }) => {
+
+  const [color, setColor] = useState("black")
+
+  const handleColor = (e) => {
+    setColor(e.target.value)
+  }
+
+
+
   return (
     <div>
-      <h5>Sector N°{number}</h5>
+      <h5 style={{ color: color }}>Sector N°{number}</h5>
+      <div>
+        <label htmlFor="sectorColor">Selecciona un color para el sector: </label>
+        <input onChange={handleColor} type="color" name="sectorColor" id="sectorColor" />
+      </div>
+
 
 
       <div>
@@ -58,18 +72,30 @@ const Capas = ({ number }) => {
   )
 }
 
+const Cell = ({ color }) => {
+  return (
+    <div style={{ backgroundColor: color }}></div>
+  )
+}
+
 
 
 
 
 function App() {
 
+  const [sectorColors, setSectorColors] = useState([])
   const [sectors, setSectors] = useState([])
   const [cellVolume, setCellVolume] = useState(0)
   const [bulkVolume, setBulkVolume] = useState([])
   const [porousVolume, setPorousVolume] = useState([])
   const [waterVolume, setWaterVolume] = useState([])
   const [oilVolume, setOilVolume] = useState([])
+  const [positions, setPositions] = useState([])
+  const [sectorPositions, setSectorPositions] = useState([])
+  const [top, setTop] = useState([])
+  const [lateral, setLateral] = useState([])
+
 
 
 
@@ -78,9 +104,9 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const i = e.target.i.value
-    const j = e.target.j.value
-    const k = e.target.k.value
+    const i = Number(e.target.i.value)
+    const j = Number(e.target.j.value)
+    const k = Number(e.target.k.value)
     const cellWidth = e.target.cellWidth.value
     const cellHeight = e.target.cellHeight.value
     const cellThickness = e.target.cellThickness.value
@@ -97,6 +123,7 @@ function App() {
       arr.push(<Capas key={i} number={i + 1} />)
     }
     setSectors(arr)
+    setPositions([i, j, k])
 
 
     // console.log({ i, j, k })
@@ -109,8 +136,7 @@ function App() {
     e.preventDefault()
 
     const volume = (cells) => {
-      const fromCell = cells[0]
-      const toCell = cells[1]
+      const [fromCell, toCell] = cells
       let result = 1
 
       for (let i = 0; i < fromCell.length; i++) {
@@ -120,6 +146,69 @@ function App() {
       return 7758 * result * cellVolume / (10 ** 6)
     }
 
+    const createGrid = (cols, rows) => {
+      const grid = []
+
+      for (let i = 0; i < rows; i++) {
+        const row = []
+        for (let j = 0; j < cols; j++) {
+          row.push(0)
+
+        }
+        grid.push(row)
+      }
+
+      return grid
+
+    }
+
+    const topView = (cells) => {
+      const [fromCell, toCell] = cells
+      const rows = positions[0]
+      const cols = positions[1]
+      const grid = createGrid(cols, rows)
+
+      for (let s = 0; s < sectors.length; s++) {
+        const [iFrom, jFrom, kFrom] = fromCell[s]
+        const iTo = toCell[s][0]
+        const jTo = toCell[s][1]
+
+        if (kFrom === 1) {
+          for (let j = jFrom - 1; j < jTo; j++) {
+            for (let i = iFrom - 1; i < iTo; i++) {
+              grid[j][i] = <Cell color={sectorColors[s]} />
+            }
+          }
+        }
+      }
+      return grid
+    }
+
+    const lateralView = (cells) => {
+      const [fromCell, toCell] = cells
+      const rows = positions[2]
+      const cols = positions[1]
+      const grid = createGrid(cols, rows)
+
+      for (let s = 0; s < sectors.length; s++) {
+        const [iFrom, jFrom, kFrom] = fromCell[s]
+        const kTo = toCell[s][2]
+        const jTo = toCell[s][1]
+
+        if (iFrom === 1) {
+          for (let k = kFrom - 1; k < kTo; k++) {
+            for (let j = jFrom - 1; j < jTo; j++) {
+              grid[k][j] = <Cell color={sectorColors[s]} />
+            }
+          }
+        }
+      }
+      return grid
+    }
+
+    const colors = [...e.target.sectorColor].map(el => el.value)
+
+    setSectorColors(colors)
     const iFrom = [...e.target.iFrom]
     const jFrom = [...e.target.jFrom]
     const kFrom = [...e.target.kFrom]
@@ -145,6 +234,11 @@ function App() {
       ]
     ))
 
+    setTop(topView([fromCell, toCell]).reverse())
+
+    setLateral(lateralView([fromCell, toCell]))
+
+
 
     let bulkVol = []
     let porousVol = []
@@ -155,18 +249,15 @@ function App() {
     for (let i = 0; i < sectors.length; i++) {
 
       const cells = [fromCell[i], toCell[i]]
-
       const vol = volume(cells)
-
 
       bulkVol.push(vol)
       porousVol.push(vol * porosity[i])
       waterVol.push(vol * porosity[i] * Sw[i])
       oilVol.push(vol * porosity[i] * (1 - Sw[i]) / Boi[i])
-
-
-
     }
+
+    setSectorPositions([fromCell, toCell])
 
 
     setBulkVolume(bulkVol)
@@ -245,11 +336,9 @@ function App() {
       </form>
 
 
-
-
-
-      <h5>Resultados</h5>
-      {/* <div className="Prueba">
+      <div>
+        <h5>Resultados</h5>
+        {/* <div className="Prueba">
         <h6>Capa</h6>
         <div>
           <p>Volumen total del sector 1: 84.5 MM Bls</p>
@@ -285,56 +374,64 @@ function App() {
 
       </div> */}
 
-      <p>Volumen de la celda: {cellVolume.toFixed(2)} acres*ft</p>
+        <p>Volumen de la celda: {cellVolume.toFixed(2)} acres*ft</p>
 
-      <div>{bulkVolume.map((volume, i) => (
-        <p>Volumen total del sector {i + 1}: {volume.toFixed(2)} MM Bls</p>
-      ))}</div>
+        <div className='Resultados-por-sector'>{bulkVolume.map((volume, i) => (
+          <div key={i} >
+            <h5>Sector {i + 1}</h5>
 
-
-      <div>{porousVolume.map((volume, i) => (
-        <p>Volumen poroso del sector {i + 1}: {volume.toFixed(2)} MM Bls</p>
-      ))}</div>
-
-
-      <div>{waterVolume.map((volume, i) => (
-        <p>Volumen poroso del sector {i + 1}: {volume.toFixed(2)} MM Bls</p>
-      ))}</div>
-
-
-      <div>{oilVolume.map((volume, i) => (
-        <p>Volumen poroso del sector {i + 1}: {volume.toFixed(2)} MM Bls</p>
-      ))}</div>
-
-      {
-        bulkVolume.length > 0 &&
-        <p>Volumen total: {bulkVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
-        </p>
-      }
-
-      {
-        porousVolume.length > 0 &&
-        <p>Volumen poroso total: {porousVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
-        </p>
-      }
-
-
-      {
-        waterVolume.length > 0 &&
-        <p>Volumen de agua total: {waterVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
-        </p>
-      }
-
-
-      {
-        oilVolume.length > 0 &&
-        <p>POES: {oilVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
-        </p>
-      }
+            <p>Volumen total: {volume.toFixed(2)} MM Bls</p>
+            <p>Volumen poroso: {porousVolume[i].toFixed(2)} MM Bls</p>
+            <p>Volumen de agua: {waterVolume[i].toFixed(2)} MM Bls</p>
+            <p>Volumen de petróleo: {oilVolume[i].toFixed(2)} MM Bls</p>
+          </div>
+        ))}</div>
 
 
 
+        {
+          bulkVolume.length > 0 &&
 
+          <div>
+            <h5>Global</h5>
+            <p>Volumen total: {bulkVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            </p>
+            <p>Volumen poroso total: {porousVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            </p>
+            <p>Volumen de agua total: {waterVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            </p>
+            <p>POES: {oilVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            </p>
+
+          </div>
+        }
+
+      </div>
+
+      <h5>Vista de planta</h5>
+
+      <div className='Grid' style={{
+        gridTemplateColumns: `repeat(${positions[0]}, 1fr)`,
+        gridTemplateRows: `repeat(${positions[1]}, 1fr)`
+      }}>
+
+
+        {top}
+
+      </div>
+
+      <h5>Vista lateral</h5>
+
+
+      <div className='Grid' style={{
+        gridTemplateColumns: `repeat(${positions[1]}, 1fr)`,
+        gridTemplateRows: `repeat(${positions[2]}, 1fr)`
+      }}>
+
+
+        {lateral}
+
+      </div>
 
     </>
   )
