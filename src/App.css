@@ -2,15 +2,91 @@
 	text-align: center;
 }
 
+.Header {
+	width: 100%;
+	height: auto;
+	background-color: blue;
+	display: flex;
+	justify-content: space-around;
+	color: white;
+	padding: 1rem 0;
+}
+
+.Header img {
+	width: 100px;
+	height: auto;
+}
+
+form {
+	padding-bottom: 3rem;
+}
+
 form div input {
+	margin: 0.5rem 0;
 	width: 250px;
+	padding: 0.5rem 1rem;
 	display: flex;
 	justify-self: flex-end;
 }
 
+input[type="color"] {
+	padding: 0;
+	margin: 0;
+	width: 35px;
+	height: 35px;
+	border: none;
+}
+
+button {
+	width: 150px;
+	height: 50px;
+	padding: 0.7rem 1.2rem;
+	background-color: blue;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	font-size: 0.9rem;
+	font-weight: bold;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: rgb(61, 61, 240);
+}
+
+.InputData {
+	max-width: 1000px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	align-items: center;
+	gap: 0 100px;
+}
+
+.InputSectors {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 2rem;
+}
+
+.InputSectors section {
+	display: flex;
+	max-width: 1000px;
+	margin: 0 auto;
+	flex-wrap: wrap;
+	gap: 4rem;
+}
+
+.InputSectors button {
+	justify-self: center;
+}
+
 .Grid {
-	width: 90vw;
-	height: 100vh;
+	width: 100%;
+	height: 80vh;
 	margin: 0 auto;
 	display: grid;
 }
@@ -19,7 +95,17 @@ form div input {
 	border: solid black 1px;
 }
 
-.Resultados-por-sector {
+.Results {
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+.Sector-results {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
+}
+
+.Views {
+	max-width: 1000px;
+	margin: 0 auto;
 }

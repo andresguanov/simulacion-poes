@@ -1,74 +1,21 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
+import { InputData } from './components/InputData'
+import { Sectors } from './components/Sectors'
 
 
-const Capas = ({ number }) => {
-
-  const [color, setColor] = useState("black")
-
-  const handleColor = (e) => {
-    setColor(e.target.value)
-  }
-
-
-
+const Header = () => {
   return (
-    <div>
-      <h5 style={{ color: color }}>Sector N°{number}</h5>
+    <header className='Header'>
+      <h1>Universidad Central del Ecuador</h1>
       <div>
-        <label htmlFor="sectorColor">Selecciona un color para el sector: </label>
-        <input onChange={handleColor} type="color" name="sectorColor" id="sectorColor" />
+        {/* <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Escudo_de_la_Universidad_Central_del_Ecuador.png" alt="uce" /> */}
+        <img src="https://static.wixstatic.com/media/4f9ac1_faed42d313204930a36843c8494530ee~mv2.png/v1/fit/w_313%2Ch_239%2Cal_c/file.png" alt="figempa" />
+
       </div>
 
-
-
-      <div>
-        <label htmlFor="iFrom">Posición i inicial: </label>
-        <input type="text" name="iFrom" id="iFrom" />
-      </div>
-
-      <div>
-        <label htmlFor="jFrom">Posición j inicial: </label>
-        <input type="text" name="jFrom" id="jFrom" />
-      </div>
-
-      <div>
-        <label htmlFor="kFrom">Posición k inicial: </label>
-        <input type="text" name="kFrom" id="kFrom" />
-      </div>
-
-      <div>
-        <label htmlFor="iTo">Posición i final: </label>
-        <input type="text" name="iTo" id="iTo" />
-      </div>
-
-      <div>
-        <label htmlFor="jTo">Posición j final: </label>
-        <input type="text" name="jTo" id="jTo" />
-      </div>
-
-      <div>
-        <label htmlFor="kTo">Posición k final: </label>
-        <input type="text" name="kTo" id="kTo" />
-      </div>
-
-      <div>
-        <label htmlFor="porosity">Porosidad específica del sector: </label>
-        <input type="text" name="porosity" id="porosity" />
-      </div>
-
-      <div>
-        <label htmlFor="sw">Sw específica del sector: </label>
-        <input type="text" name="sw" id="sw" />
-      </div>
-
-      <div>
-        <label htmlFor="boi">Boi específico del sector: </label>
-        <input type="text" name="boi" id="boi" />
-      </div>
-
-    </div>
+    </header>
   )
 }
 
@@ -77,6 +24,37 @@ const Cell = ({ color }) => {
     <div style={{ backgroundColor: color }}></div>
   )
 }
+
+const calculateVolume = (cells, cellVol) => {
+  const [fromCell, toCell] = cells
+  let result = 1
+
+  for (let i = 0; i < fromCell.length; i++) {
+    result *= toCell[i] - fromCell[i] + 1
+  }
+
+  return 7758 * result * cellVol / (10 ** 6)
+}
+
+const createGrid = (cols, rows) => {
+  const grid = []
+
+  for (let i = 0; i < rows; i++) {
+    const row = []
+    for (let j = 0; j < cols; j++) {
+      row.push(<div></div>)
+
+    }
+    grid.push(row)
+  }
+
+  return grid
+
+}
+
+
+
+
 
 
 
@@ -97,8 +75,55 @@ function App() {
   const [lateral, setLateral] = useState([])
 
 
+  const topView = (cells) => {
+    const [fromCell, toCell] = cells
+    const rows = positions[0]
+    const cols = positions[1]
+    const grid = createGrid(cols, rows)
 
+    for (let s = 0; s < sectors.length; s++) {
+      const [iFrom, jFrom, kFrom] = fromCell[s]
+      const iTo = toCell[s][0]
+      const jTo = toCell[s][1]
 
+      if (kFrom === 1) {
+        for (let j = jFrom - 1; j < jTo; j++) {
+          for (let i = iFrom - 1; i < iTo; i++) {
+            grid[j][i] = <Cell color={sectorColors[s]} />
+          }
+        }
+      }
+    }
+    return grid
+  }
+
+  const lateralView = (cells) => {
+    const [fromCell, toCell] = cells
+    const rows = positions[2]
+    const cols = positions[1]
+    const grid = createGrid(cols, rows)
+
+    for (let s = 0; s < sectors.length; s++) {
+      const [iFrom, jFrom, kFrom] = fromCell[s]
+      const kTo = toCell[s][2]
+      const jTo = toCell[s][1]
+
+      if (iFrom === 1) {
+        for (let k = kFrom - 1; k < kTo; k++) {
+          for (let j = jFrom - 1; j < jTo; j++) {
+            grid[k][j] = <Cell color={sectorColors[s]} />
+          }
+        }
+      }
+    }
+    return grid
+  }
+
+  useEffect(() => {
+    setTop(topView(sectorPositions).reverse())
+
+    setLateral(lateralView(sectorPositions))
+  }, [sectorColors])
 
 
 
@@ -110,105 +135,29 @@ function App() {
     const cellWidth = e.target.cellWidth.value
     const cellHeight = e.target.cellHeight.value
     const cellThickness = e.target.cellThickness.value
-
-    const cellVol = (cellWidth * cellHeight * cellThickness) * 3.28 ** 3 / 43560
-    setCellVolume(cellVol)
-
-
     const sectorsLength = e.target.sectorsLength.value
 
-    const arr = []
+    const cellVol = (cellWidth * cellHeight * cellThickness) * 3.28 ** 3 / 43560
+
+    const sectors = []
 
     for (let i = 0; i < sectorsLength; i++) {
-      arr.push(<Capas key={i} number={i + 1} />)
+      sectors.push(<Sectors key={i} number={i + 1} />)
     }
-    setSectors(arr)
+
+
+
+    setCellVolume(cellVol)
+    setSectors(sectors)
     setPositions([i, j, k])
 
-
-    // console.log({ i, j, k })
-    // console.log({ cellWidth, cellHeight, cellThickness })
-    // console.log({ sectorsLength })
 
   }
 
   const handleSectors = (e) => {
     e.preventDefault()
 
-    const volume = (cells) => {
-      const [fromCell, toCell] = cells
-      let result = 1
-
-      for (let i = 0; i < fromCell.length; i++) {
-        result *= toCell[i] - fromCell[i] + 1
-      }
-
-      return 7758 * result * cellVolume / (10 ** 6)
-    }
-
-    const createGrid = (cols, rows) => {
-      const grid = []
-
-      for (let i = 0; i < rows; i++) {
-        const row = []
-        for (let j = 0; j < cols; j++) {
-          row.push(0)
-
-        }
-        grid.push(row)
-      }
-
-      return grid
-
-    }
-
-    const topView = (cells) => {
-      const [fromCell, toCell] = cells
-      const rows = positions[0]
-      const cols = positions[1]
-      const grid = createGrid(cols, rows)
-
-      for (let s = 0; s < sectors.length; s++) {
-        const [iFrom, jFrom, kFrom] = fromCell[s]
-        const iTo = toCell[s][0]
-        const jTo = toCell[s][1]
-
-        if (kFrom === 1) {
-          for (let j = jFrom - 1; j < jTo; j++) {
-            for (let i = iFrom - 1; i < iTo; i++) {
-              grid[j][i] = <Cell color={sectorColors[s]} />
-            }
-          }
-        }
-      }
-      return grid
-    }
-
-    const lateralView = (cells) => {
-      const [fromCell, toCell] = cells
-      const rows = positions[2]
-      const cols = positions[1]
-      const grid = createGrid(cols, rows)
-
-      for (let s = 0; s < sectors.length; s++) {
-        const [iFrom, jFrom, kFrom] = fromCell[s]
-        const kTo = toCell[s][2]
-        const jTo = toCell[s][1]
-
-        if (iFrom === 1) {
-          for (let k = kFrom - 1; k < kTo; k++) {
-            for (let j = jFrom - 1; j < jTo; j++) {
-              grid[k][j] = <Cell color={sectorColors[s]} />
-            }
-          }
-        }
-      }
-      return grid
-    }
-
     const colors = [...e.target.sectorColor].map(el => el.value)
-
-    setSectorColors(colors)
     const iFrom = [...e.target.iFrom]
     const jFrom = [...e.target.jFrom]
     const kFrom = [...e.target.kFrom]
@@ -234,9 +183,7 @@ function App() {
       ]
     ))
 
-    setTop(topView([fromCell, toCell]).reverse())
 
-    setLateral(lateralView([fromCell, toCell]))
 
 
 
@@ -249,7 +196,7 @@ function App() {
     for (let i = 0; i < sectors.length; i++) {
 
       const cells = [fromCell[i], toCell[i]]
-      const vol = volume(cells)
+      const vol = calculateVolume(cells, cellVolume)
 
       bulkVol.push(vol)
       porousVol.push(vol * porosity[i])
@@ -257,14 +204,12 @@ function App() {
       oilVol.push(vol * porosity[i] * (1 - Sw[i]) / Boi[i])
     }
 
+    setSectorColors(colors)
     setSectorPositions([fromCell, toCell])
-
-
     setBulkVolume(bulkVol)
     setPorousVolume(porousVol)
     setWaterVolume(waterVol)
     setOilVolume(oilVol)
-
 
   }
 
@@ -274,126 +219,46 @@ function App() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <h5>Número de sectores en los que se puede subdividir el yacimiento</h5>
-          <div>
-            <label htmlFor="i">Ingrese i: </label>
-            <input type="text" name="i" id="i" />
-          </div>
-
-          <div>
-            <label htmlFor="j">Ingrese j: </label>
-            <input type="text" name="j" id="j" />
-          </div>
-
-          <div>
-            <label htmlFor="k">Ingrese k: </label>
-            <input type="text" name="k" id="k" />
-          </div>
-
-        </div>
-
-        <div>
-          <h5>Tamaño de la celda</h5>
-          <div>
-            <label htmlFor="cellWidth">Ingrese el ancho (m): </label>
-            <input type="text" name="cellWidth" id="cellWidth" />
-          </div>
-
-          <div>
-            <label htmlFor="cellHeight">Ingrese el largo (m): </label>
-            <input type="text" name="cellHeight" id="cellHeight" />
-          </div>
-
-          <div>
-            <label htmlFor="cellThickness">Ingrese el espesor (m): </label>
-            <input type="text" name="cellThickness" id="cellThickness" />
-          </div>
-        </div>
-
-        <div>
-          <h5>Sectores</h5>
-          <div>
-            <label htmlFor="sectorsLength">Ingrese el número de sectores: </label>
-            <input type="text" name="sectorsLength" id="sectorsLength" />
-          </div>
-        </div>
-
-
-
-
-        <button type="submit">submit</button>
+      <Header />
+      <form className="InputData" onSubmit={handleSubmit}>
+        <InputData />
       </form>
 
-      <form onSubmit={handleSectors}>
+      <form className="InputSectors" onSubmit={handleSectors}>
         {sectors.length > 0 &&
           <>
-            {sectors}
-            <button type="submit">submit</button>
+            <section >
+              {sectors}
+            </section>
+            <button type="submit">Calcular</button>
+
           </>
         }
       </form>
 
 
-      <div>
-        <h5>Resultados</h5>
-        {/* <div className="Prueba">
-        <h6>Capa</h6>
-        <div>
-          <p>Volumen total del sector 1: 84.5 MM Bls</p>
-          <p>Volumen poroso del sector 1: 84.5 MM Bls</p>
-          <p>Volumen de agua del sector 1: 84.5 MM Bls</p>
-          <p>Volumen de petróleo del sector 1: 84.5 MM Bls</p>
-        </div>
-
-
-
-      </div>
-
-      <p>Bulk Volume: </p>
-      <p>44 MM </p>
-
-      <p>Volumen poroso total: </p>
-      <p>Volumen de agua total: </p>
-      <p>Volumen de petróleo total: </p>
-
-
-
-
-      <div className="Prueba">
-        <div>
-          <h6>Capa</h6>
-          <p>Volumen total del sector 1: 84.5 MM Bls</p>
-          <p>Volumen poroso del sector 1: 84.5 MM Bls</p>
-          <p>Volumen de agua del sector 1: 84.5 MM Bls</p>
-          <p>Volumen de petróleo del sector 1: 84.5 MM Bls</p>
-        </div>
-
-
-
-      </div> */}
-
-        <p>Volumen de la celda: {cellVolume.toFixed(2)} acres*ft</p>
-
-        <div className='Resultados-por-sector'>{bulkVolume.map((volume, i) => (
-          <div key={i} >
-            <h5>Sector {i + 1}</h5>
-
-            <p>Volumen total: {volume.toFixed(2)} MM Bls</p>
-            <p>Volumen poroso: {porousVolume[i].toFixed(2)} MM Bls</p>
-            <p>Volumen de agua: {waterVolume[i].toFixed(2)} MM Bls</p>
-            <p>Volumen de petróleo: {oilVolume[i].toFixed(2)} MM Bls</p>
-          </div>
-        ))}</div>
-
-
+      <div className='Results'>
 
         {
           bulkVolume.length > 0 &&
 
           <div>
-            <h5>Global</h5>
+            <h3>Resultados</h3>
+
+
+            <p>Volumen de la celda: {cellVolume.toFixed(2)} acres*ft</p>
+
+            <div className='Sector-results'>{bulkVolume.map((volume, i) => (
+              <div key={i} >
+                <h3>Sector {i + 1}</h3>
+
+                <p>Volumen total: {volume.toFixed(2)} MM Bls</p>
+                <p>Volumen poroso: {porousVolume[i].toFixed(2)} MM Bls</p>
+                <p>Volumen de agua: {waterVolume[i].toFixed(2)} MM Bls</p>
+                <p>Volumen de petróleo: {oilVolume[i].toFixed(2)} MM Bls</p>
+              </div>
+            ))}</div>
+            <h3>Global</h3>
             <p>Volumen total: {bulkVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
             </p>
             <p>Volumen poroso total: {porousVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
@@ -408,30 +273,40 @@ function App() {
 
       </div>
 
-      <h5>Vista de planta</h5>
+      {
+        top.length > 0 &&
+        <div className='Views'>
 
-      <div className='Grid' style={{
-        gridTemplateColumns: `repeat(${positions[0]}, 1fr)`,
-        gridTemplateRows: `repeat(${positions[1]}, 1fr)`
-      }}>
+          <h3>Vista de planta</h3>
 
-
-        {top}
-
-      </div>
-
-      <h5>Vista lateral</h5>
+          <div className='Grid' style={{
+            gridTemplateColumns: `repeat(${positions[0]}, 1fr)`,
+            gridTemplateRows: `repeat(${positions[1]}, 1fr)`
+          }}>
 
 
-      <div className='Grid' style={{
-        gridTemplateColumns: `repeat(${positions[1]}, 1fr)`,
-        gridTemplateRows: `repeat(${positions[2]}, 1fr)`
-      }}>
+            {top}
+
+          </div>
+        </div>
+
+      }
+
+      {
+        lateral.length > 0 &&
+        <div className='Views'>
+          <h3>Vista lateral</h3>
+          <div className='Grid' style={{
+            gridTemplateColumns: `repeat(${positions[1]}, 1fr)`,
+            gridTemplateRows: `repeat(${positions[2]}, 1fr)`
+          }}>
 
 
-        {lateral}
+            {lateral}
 
-      </div>
+          </div>
+        </div>
+      }
 
     </>
   )
