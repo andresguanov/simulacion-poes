@@ -65,11 +65,7 @@ button:hover {
 }
 
 .InputSectors {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 2rem;
+	display: grid;
 }
 
 .InputSectors section {
@@ -77,11 +73,23 @@ button:hover {
 	max-width: 1000px;
 	margin: 0 auto;
 	flex-wrap: wrap;
-	gap: 4rem;
 }
 
 .InputSectors button {
 	justify-self: center;
+}
+
+.InputSectors .Input-titles {
+	display: grid;
+	width: 100%;
+	grid-template-columns: repeat(11, 1fr);
+	justify-items: center;
+	align-items: center;
+	text-align: center;
+}
+
+.InputSectors footer {
+	font-size: x-small;
 }
 
 .Grid {

@@ -231,10 +231,37 @@ function App() {
       </form>
 
       <form className="InputSectors" onSubmit={handleSectors}>
+
         {sectors.length > 0 &&
           <>
+
             <section >
+              <div className='Input-titles'>
+                <h4>Sector</h4>
+                <h4>i<sub>inicial</sub></h4>
+                <h4>j<sub>inicial</sub></h4>
+                <h4>k<sub>inicial</sub></h4>
+                <h4>i<sub>final</sub></h4>
+                <h4>j<sub>final</sub></h4>
+                <h4>k<sub>final</sub></h4>
+                <h4>Porosidad </h4>
+                <h4>NTG</h4>
+                <h4>Sw<sub>i</sub></h4>
+                <h4>Bo<sub>i</sub></h4>
+              </div>
+
+
               {sectors}
+              <footer>
+                <p><strong>i , j , k :</strong> Posiciones de las celdas por cada sector</p>
+                <p>Porosidad específica del sector, fracción</p>
+                <p><strong>NTG:</strong> Net to gross específico del sector, fracción </p>
+
+
+                <p><strong>Swi :</strong> Saturación inicial de agua específico del sector, fracción</p>
+                <p><strong>Boi :</strong> Factor volumétrico de petróleo inicial específico del sector, BY/BN</p>
+
+              </footer>
             </section>
             <button type="submit">Calcular</button>
 
@@ -249,19 +276,19 @@ function App() {
           bulkVolume.length > 0 &&
 
           <div>
-            <h3>Resultados</h3>
+            <h2>Resultados</h2>
 
 
-            <p>Volumen de la celda: {(7758 * cellVolume).toFixed(2)} bls</p>
+            <p><strong>Volumen de la celda:</strong> {(7758 * cellVolume).toFixed(2)} bls</p>
 
             <div className='Sector-results'>{bulkVolume.map((volume, i) => (
               <div key={i} >
                 <h3>Sector {i + 1}</h3>
 
-                <p>Volumen total: {volume.toFixed(2)} MM Bls</p>
-                <p>Volumen poroso: {porousVolume[i].toFixed(2)} MM Bls</p>
-                <p>Volumen de agua: {waterVolume[i].toFixed(2)} MM Bls</p>
-                <p>Volumen de petróleo: {oilVolume[i].toFixed(2)} MM Bls</p>
+                <p><strong>Volumen total:</strong> {volume.toFixed(2)} MM Bls</p>
+                <p><strong>Volumen poroso:</strong> {porousVolume[i].toFixed(2)} MM Bls</p>
+                <p><strong>Volumen de agua:</strong> {waterVolume[i].toFixed(2)} MM Bls</p>
+                <p><strong>Volumen de petróleo:</strong> {oilVolume[i].toFixed(2)} MM Bls</p>
               </div>
             ))}</div>
             <h3>Global</h3>
