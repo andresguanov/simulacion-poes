@@ -24,17 +24,17 @@ export const InputData = () => {
                 <h3>Tamaño de la celda</h3>
                 <div>
                     <label htmlFor="cellWidth">Ingrese el ancho (m): </label>
-                    <input type="number" min={0} name="cellWidth" id="cellWidth" required />
+                    <input type="number" min={0} name="cellWidth" id="cellWidth" required step="any" />
                 </div>
 
                 <div>
                     <label htmlFor="cellHeight">Ingrese el largo (m): </label>
-                    <input type="number" min={0} name="cellHeight" id="cellHeight" required />
+                    <input type="number" min={0} name="cellHeight" id="cellHeight" required step="any" />
                 </div>
 
                 <div>
                     <label htmlFor="cellThickness">Ingrese el espesor (m): </label>
-                    <input type="number" min={0} name="cellThickness" id="cellThickness" required />
+                    <input type="number" min={0} name="cellThickness" id="cellThickness" required step="any" />
                 </div>
             </div>
 

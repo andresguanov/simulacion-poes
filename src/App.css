@@ -87,7 +87,7 @@ button:hover {
 .Grid {
 	width: 100%;
 	height: 80vh;
-	margin: 0 auto;
+	margin: 0 auto 5rem;
 	display: grid;
 }
 

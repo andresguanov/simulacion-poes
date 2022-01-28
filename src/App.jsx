@@ -77,9 +77,10 @@ function App() {
 
   const topView = (cells) => {
     const [fromCell, toCell] = cells
-    const rows = positions[0]
-    const cols = positions[1]
+    const cols = positions[0]
+    const rows = positions[1]
     const grid = createGrid(cols, rows)
+
 
     for (let s = 0; s < sectors.length; s++) {
       const [iFrom, jFrom, kFrom] = fromCell[s]
@@ -120,7 +121,7 @@ function App() {
   }
 
   useEffect(() => {
-    setTop(topView(sectorPositions).reverse())
+    setTop(topView(sectorPositions))
 
     setLateral(lateralView(sectorPositions))
   }, [sectorColors])
@@ -246,7 +247,7 @@ function App() {
             <h3>Resultados</h3>
 
 
-            <p>Volumen de la celda: {cellVolume.toFixed(2)} acres*ft</p>
+            <p>Volumen de la celda: {(7758 * cellVolume).toFixed(2)} bls</p>
 
             <div className='Sector-results'>{bulkVolume.map((volume, i) => (
               <div key={i} >
@@ -278,7 +279,7 @@ function App() {
         <div className='Views'>
 
           <h3>Vista de planta</h3>
-
+          <h5>Origen del grid: Extremo inferior izquierdo</h5>
           <div className='Grid' style={{
             gridTemplateColumns: `repeat(${positions[0]}, 1fr)`,
             gridTemplateRows: `repeat(${positions[1]}, 1fr)`
