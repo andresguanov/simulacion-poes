@@ -5,15 +5,18 @@
 .Header {
 	width: 100%;
 	height: auto;
-	background-color: blue;
+	background-color: rgb(43, 43, 248);
 	display: flex;
 	justify-content: space-around;
+	align-items: center;
 	color: white;
-	padding: 1rem 0;
+	padding: 0.5rem 0;
+	margin-bottom: 1rem;
+	box-shadow: 0 5px 5px rgb(176, 176, 250);
 }
 
 .Header img {
-	width: 100px;
+	width: 150px;
 	height: auto;
 }
 
@@ -31,9 +34,9 @@ form div input {
 
 input[type="color"] {
 	padding: 0;
-	margin: 0;
-	width: 35px;
-	height: 35px;
+	margin: 0 1rem 0 0;
+	width: 30px;
+	height: 30px;
 	border: none;
 }
 
@@ -53,6 +56,10 @@ button {
 
 button:hover {
 	background-color: rgb(61, 61, 240);
+}
+
+button:active {
+	transform: scale(1.1);
 }
 
 .InputData {
@@ -97,15 +104,24 @@ button:hover {
 	height: 80vh;
 	margin: 0 auto 5rem;
 	display: grid;
+	border-top: solid black 1px;
+	border-left: solid black 1px;
 }
 
 .Grid div {
-	border: solid black 1px;
+	border: solid black 0;
+	border-bottom-width: 1px;
+	border-right-width: 1px;
 }
 
 .Results {
 	max-width: 1000px;
 	margin: 0 auto;
+}
+
+.Results .title {
+	display: flex;
+	justify-content: center;
 }
 
 .Sector-results {
@@ -115,5 +131,10 @@ button:hover {
 
 .Views {
 	max-width: 1000px;
-	margin: 0 auto;
+	margin: 4rem auto;
+}
+
+.Views .title {
+	display: flex;
+	justify-content: center;
 }

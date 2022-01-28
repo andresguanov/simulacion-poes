@@ -8,7 +8,14 @@ import { Sectors } from './components/Sectors'
 const Header = () => {
   return (
     <header className='Header'>
-      <h1>Universidad Central del Ecuador</h1>
+      <div className='Header-left'>
+        <h1>Universidad Central del Ecuador</h1>
+        <h4>Facultad de Ingeniería en Geología, Minas, Petróleos y Ambiental</h4>
+        <h5>Simulación Matemática Componente Estático</h5>
+
+
+
+      </div>
       <div>
         {/* <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Escudo_de_la_Universidad_Central_del_Ecuador.png" alt="uce" /> */}
         <img src="https://static.wixstatic.com/media/4f9ac1_faed42d313204930a36843c8494530ee~mv2.png/v1/fit/w_313%2Ch_239%2Cal_c/file.png" alt="figempa" />
@@ -19,11 +26,6 @@ const Header = () => {
   )
 }
 
-const Cell = ({ color }) => {
-  return (
-    <div style={{ backgroundColor: color }}></div>
-  )
-}
 
 const calculateVolume = (cells, cellVol) => {
   const [fromCell, toCell] = cells
@@ -90,7 +92,9 @@ function App() {
       if (kFrom === 1) {
         for (let j = jFrom - 1; j < jTo; j++) {
           for (let i = iFrom - 1; i < iTo; i++) {
-            grid[j][i] = <Cell color={sectorColors[s]} />
+
+
+            grid[j][i] = <div style={{ backgroundColor: sectorColors[s] }}></div>
           }
         }
       }
@@ -104,6 +108,7 @@ function App() {
     const cols = positions[1]
     const grid = createGrid(cols, rows)
 
+
     for (let s = 0; s < sectors.length; s++) {
       const [iFrom, jFrom, kFrom] = fromCell[s]
       const kTo = toCell[s][2]
@@ -112,7 +117,8 @@ function App() {
       if (iFrom === 1) {
         for (let k = kFrom - 1; k < kTo; k++) {
           for (let j = jFrom - 1; j < jTo; j++) {
-            grid[k][j] = <Cell color={sectorColors[s]} />
+
+            grid[k][j] = <div style={{ backgroundColor: sectorColors[s] }}></div>
           }
         }
       }
@@ -122,7 +128,7 @@ function App() {
 
   useEffect(() => {
 
-    setTop(topView(sectorPositions))
+    setTop(topView(sectorPositions).reverse())
 
     setLateral(lateralView(sectorPositions))
   }, [sectorColors])
@@ -276,14 +282,14 @@ function App() {
           bulkVolume.length > 0 &&
 
           <div>
-            <h2>Resultados</h2>
+            <h2 className='title'>Resultados</h2>
 
 
             <p><strong>Volumen de la celda:</strong> {(7758 * cellVolume).toFixed(2)} bls</p>
 
             <div className='Sector-results'>{bulkVolume.map((volume, i) => (
               <div key={i} >
-                <h3>Sector {i + 1}</h3>
+                <h3 style={{ color: sectorColors[i] }}>Sector {i + 1}</h3>
 
                 <p><strong>Volumen total:</strong> {volume.toFixed(2)} MM Bls</p>
                 <p><strong>Volumen poroso:</strong> {porousVolume[i].toFixed(2)} MM Bls</p>
@@ -291,14 +297,15 @@ function App() {
                 <p><strong>Volumen de petróleo:</strong> {oilVolume[i].toFixed(2)} MM Bls</p>
               </div>
             ))}</div>
+
             <h3>Global</h3>
-            <p>Volumen total: {bulkVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            <p><strong>Volumen total:</strong> {bulkVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
             </p>
-            <p>Volumen poroso total: {porousVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            <p><strong>Volumen poroso total:</strong> {porousVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
             </p>
-            <p>Volumen de agua total: {waterVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            <p><strong>Volumen de agua total:</strong> {waterVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
             </p>
-            <p>POES: {oilVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
+            <p><strong>POES:</strong> {oilVolume.reduce((a, b) => a + b).toFixed(2)}MM Bls
             </p>
 
           </div>
@@ -310,7 +317,7 @@ function App() {
         top.length > 0 &&
         <div className='Views'>
 
-          <h3>Vista de planta</h3>
+          <h3 className='title'>Vista de planta</h3>
           <h5>Origen del grid: Extremo inferior izquierdo</h5>
           <div className='Grid' style={{
             gridTemplateColumns: `repeat(${positions[0]}, 1fr)`,
@@ -328,7 +335,7 @@ function App() {
       {
         lateral.length > 0 &&
         <div className='Views'>
-          <h3>Vista lateral</h3>
+          <h3 className="title">Vista lateral</h3>
           <div className='Grid' style={{
             gridTemplateColumns: `repeat(${positions[1]}, 1fr)`,
             gridTemplateRows: `repeat(${positions[2]}, 1fr)`
