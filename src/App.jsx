@@ -121,6 +121,7 @@ function App() {
   }
 
   useEffect(() => {
+
     setTop(topView(sectorPositions))
 
     setLateral(lateralView(sectorPositions))
@@ -165,9 +166,10 @@ function App() {
     const iTo = [...e.target.iTo]
     const jTo = [...e.target.jTo]
     const kTo = [...e.target.kTo]
-    const porosity = [...e.target.porosity].map(el => el.value)
-    const Sw = [...e.target.sw].map(el => el.value)
-    const Boi = [...e.target.boi].map(el => el.value)
+    const porosity = [...e.target.porosity].map(el => Number(el.value))
+    const netToGross = [...e.target.netToGross].map(el => Number(el.value))
+    const Sw = [...e.target.sw].map(el => Number(el.value))
+    const Boi = [...e.target.boi].map(el => Number(el.value))
 
     const fromCell = iFrom.map((el, i) => (
       [
@@ -197,13 +199,16 @@ function App() {
     for (let i = 0; i < sectors.length; i++) {
 
       const cells = [fromCell[i], toCell[i]]
-      const vol = calculateVolume(cells, cellVolume)
+      const bulk = calculateVolume(cells, cellVolume)
+      const net = bulk * netToGross[i]
 
-      bulkVol.push(vol)
-      porousVol.push(vol * porosity[i])
-      waterVol.push(vol * porosity[i] * Sw[i])
-      oilVol.push(vol * porosity[i] * (1 - Sw[i]) / Boi[i])
+
+      bulkVol.push(bulk)
+      porousVol.push(net * porosity[i])
+      waterVol.push(net * porosity[i] * Sw[i])
+      oilVol.push(net * porosity[i] * (1 - Sw[i]) / Boi[i])
     }
+
 
     setSectorColors(colors)
     setSectorPositions([fromCell, toCell])
