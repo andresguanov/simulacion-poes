@@ -2,36 +2,6 @@
 	text-align: center;
 }
 
-.Header {
-	width: 100%;
-	height: auto;
-	background-color: rgb(43, 43, 248);
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	color: white;
-	padding: 0.5rem 0;
-	margin-bottom: 1rem;
-	box-shadow: 0 5px 5px rgb(176, 176, 250);
-}
-
-.Header img {
-	width: 150px;
-	height: auto;
-}
-
-form {
-	padding-bottom: 3rem;
-}
-
-form div input {
-	margin: 0.5rem 0;
-	width: 250px;
-	padding: 0.5rem 1rem;
-	display: flex;
-	justify-self: flex-end;
-}
-
 input[type="color"] {
 	padding: 0;
 	margin: 0 1rem 0 0;
@@ -62,79 +32,6 @@ button:active {
 	transform: scale(1.1);
 }
 
-.InputData {
-	max-width: 1000px;
-	margin: 0 auto;
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	align-items: center;
-	gap: 0 100px;
-}
 
-.InputSectors {
-	display: grid;
-}
 
-.InputSectors section {
-	display: flex;
-	max-width: 1000px;
-	margin: 0 auto;
-	flex-wrap: wrap;
-}
 
-.InputSectors button {
-	justify-self: center;
-}
-
-.InputSectors .Input-titles {
-	display: grid;
-	width: 100%;
-	grid-template-columns: repeat(11, 1fr);
-	justify-items: center;
-	align-items: center;
-	text-align: center;
-}
-
-.InputSectors footer {
-	font-size: x-small;
-}
-
-.Grid {
-	width: 100%;
-	height: 80vh;
-	margin: 0 auto 5rem;
-	display: grid;
-	border-top: solid black 1px;
-	border-left: solid black 1px;
-}
-
-.Grid div {
-	border: solid black 0;
-	border-bottom-width: 1px;
-	border-right-width: 1px;
-}
-
-.Results {
-	max-width: 1000px;
-	margin: 0 auto;
-}
-
-.Results .title {
-	display: flex;
-	justify-content: center;
-}
-
-.Sector-results {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-}
-
-.Views {
-	max-width: 1000px;
-	margin: 4rem auto;
-}
-
-.Views .title {
-	display: flex;
-	justify-content: center;
-}

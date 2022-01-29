@@ -1,0 +1,14 @@
+.Results {
+	max-width: 1000px;
+	margin: 4rem auto;
+}
+
+.Results .title {
+	display: flex;
+	justify-content: center;
+}
+
+.Results .Sector-results {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+}

@@ -1,21 +1,23 @@
-export const InputData = () => {
+import './InputData.css'
+
+export const InputData = ({ handleSubmit }) => {
     return (
-        <>
+        <form className="InputData" onSubmit={handleSubmit}>
             <div>
                 <h3>Subdivisión el yacimiento</h3>
                 <div>
                     <label htmlFor="i">Ingrese i: </label>
-                    <input type="number" name="i" id="i" min={4} required />
+                    <input type="number" id="i" min={4} required />
                 </div>
 
                 <div>
                     <label htmlFor="j">Ingrese j: </label>
-                    <input type="number" min={4} name="j" id="j" required />
+                    <input type="number" min={4} id="j" required />
                 </div>
 
                 <div>
                     <label htmlFor="k">Ingrese k: </label>
-                    <input type="number" min={4} name="k" id="k" required />
+                    <input type="number" min={4} id="k" required />
                 </div>
 
             </div>
@@ -45,12 +47,7 @@ export const InputData = () => {
                     <input type="number" min={4} name="sectorsLength" id="sectorsLength" required />
                 </div>
             </div>
-
-
-
-
             <button type="submit">Ingresar datos</button>
-
-        </>
+        </form>
     )
 }

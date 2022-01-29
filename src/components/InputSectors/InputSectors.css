@@ -1,0 +1,26 @@
+.InputSectors {
+	display: grid;
+}
+
+.InputSectors .table {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 auto;
+	max-width: 1000px;
+}
+
+.InputSectors header {
+	display: grid;
+	width: 100%;
+	grid-template-columns: repeat(11, 1fr);
+	place-content: center;
+	text-align: center;
+}
+
+.InputSectors footer {
+	font-size: x-small;
+}
+
+.InputSectors button {
+	justify-self: center;
+}

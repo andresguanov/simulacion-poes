@@ -1,0 +1,17 @@
+.InputData {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding-bottom: 3rem;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	align-items: center;
+	gap: 0 100px;
+}
+
+.InputData div input {
+	margin: 0.5rem 0;
+	width: 250px;
+	padding: 0.5rem 1rem;
+	display: flex;
+	justify-self: flex-end;
+}
